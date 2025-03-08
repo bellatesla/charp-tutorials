@@ -148,38 +148,215 @@ Now that you understand the basic structure of a class, we’ll explore how to a
 
 ---
 
-## Properties: Describing the Class
 
-**Properties** (or variables) hold data related to our class name. They often have **adjective-like** names, describing the characteristics of the object. 
+
+
+# Introduction to CSharp in Unity: Part 1
+
+## Fundamental Data Types
+
+When you're starting with C# in Unity, you'll need to understand four fundamental data types that form the building blocks of your games:
+
+## 1. String: Text and Words
+
+Strings are used to store and manipulate text data.
+
+```csharp
+// Declaring and initializing strings
+string playerName = "Player1";
+string dialogueLine = "Hello, world!";
+string gameState = "MainMenu";
+
+// String operations
+string fullGreeting = "Welcome, " + playerName + "!";
+string lowercaseGreeting = fullGreeting.ToLower();
+bool containsPlayer = fullGreeting.Contains("Player");
+int greetingLength = fullGreeting.Length;
+
+// String formatting
+string scoreText = string.Format("Score: {0}", 100);
+string formattedMessage = $"Hello, {playerName}! Your score is {100}.";
+```
+
+**Use strings for:**
+- Character names
+- UI text and messages
+- Scene or level names
+- Item descriptions
+- Dialogue lines
+- File paths
+- Tags and layers
+
+## 2. Int: Whole Numbers
+
+Integers are used for counting, scoring, and any whole number value.
+
+```csharp
+// Declaring and initializing integers
+int score = 100;
+int playerLevel = 5;
+int enemyCount = 12;
+int ammunition = 30;
+
+// Integer operations
+int totalScore = score + (playerLevel * 10);
+int remainingAmmo = ammunition - 2;
+int doubledScore = score * 2;
+bool hasHighScore = score > 50;
+
+// Common integer use cases
+int maxHealth = 100;
+int currentHealth = maxHealth;
+int damage = 25;
+currentHealth -= damage; // Reduces health by damage amount
+```
+
+**Use integers for:**
+- Scores and points
+- Levels or stages
+- Counting items
+- Lives remaining
+- Rounds of ammunition
+- Experience points
+- Simple indices or IDs
+
+## 3. Float: Decimal Numbers
+
+Floats are used for precise measurements and decimal values.
+
+```csharp
+// Declaring and initializing floats
+float speed = 3.5f;           // Note the 'f' suffix for float literals
+float health = 75.2f;
+float timePassed = 0f;
+float gravity = 9.81f;
+
+// Float operations
+float newPosition = speed * timePassed;
+float damageMultiplier = 1.5f;
+float actualDamage = 10 * damageMultiplier;
+bool isMovingFast = speed > 5.0f;
+
+// Float in Unity context
+float deltaTime = Time.deltaTime;        // Time since last frame
+Vector3 movement = new Vector3(0, 0, speed * deltaTime);// This is just 3 floats x,y,z as inputs
+transform.position += movement;          // Move object forward
+```
+
+**Use floats for:**
+- Position and movement
+- Time measurements
+- Physics values (speed, force)
+- Health and damage with decimal precision
+- Scaling and sizing
+- Probabilities and percentages
+- Color values (0.0f to 1.0f)
+
+## 4. Bool: True/False Conditions
+
+Booleans represent true or false conditions and are essential for game logic.
+
+```csharp
+// Declaring and initializing booleans
+bool isPlayerAlive = true;
+bool isDoorLocked = false;
+bool hasKey = false;
+bool isGamePaused = false;
+
+// Boolean operations
+bool canOpenDoor = hasKey && isDoorLocked;  // Logical AND
+bool needsHealthPickup = !isPlayerAlive || currentHealth < 20;  // Logical OR and NOT
+bool isJumping = false;
+
+// Conditional logic with booleans
+if (isPlayerAlive && !isGamePaused)
+{
+    // Process player movement
+}
+
+// Toggle boolean state
+isGamePaused = !isGamePaused;  // If true becomes false, if false becomes true
+```
+
+**Use booleans for:**
+- State tracking (alive/dead, active/inactive)
+- Permission checks (can jump, can attack)
+- Game status (paused, game over)
+- Toggles (sound on/off, inventory open/closed)
+- Collision detection results
+- Achievement unlocked status
+- Debug and feature flags
 
 ---
-
 **Pro-tip:** *When naming **boolean** properties, use positive phrasing to make your code easier to read and understand. For example:*  
-- Use `isActive` instead of `isNotActive`.  
-- Use `isShiny` instead of `isNotShiny`.  
-- Use `canDie` instead of `cannotDie`.  
+- Use `isActive` instead of `isNotActive`, `notEnabled`.  
+- Use `isShiny` instead of `isNotShiny`, `notShiny`. 
+- Use `canDie` or `isInvincable`instead of `cannotDie`.  
 - Use `hasItem` instead of `itemNotFound`.  
 
 This approach avoids double negatives and makes your code more intuitive.  
-___
 
-These are the four **basic properties** you’ll use every day: `string`, `int`, `float`, and `bool`. They are the building blocks for describing almost everything about your objects in Unity. Whether it’s a name, a score, a speed, or a true/false condition, these fundamental types will be your go-to tools.
+## Type Conversion and Compatibility
 
----
+Sometimes you need to convert between these types:
 
 ```csharp
-public string nameOfAnything = "Ork of the high mountain";
-public int wobblyLevel = 5;
-public bool isShiny = true;
-public string mysteriousColor = "Invisible";
-public float aNumberForThings = 1.5657F;
-public bool isHappyToday = true;
+// Converting between types
+int roundedHealth = (int)health;              // Float to int (truncates decimal)
+float fractionalScore = (float)score;         // Int to float
+string healthText = health.ToString();        // Float to string
+int parsedNumber = int.Parse("42");           // String to int
+bool isEmpty = string.IsNullOrEmpty(playerName);  // String to bool
 ```
 
----
+## Declaring Variables in Unity MonoBehaviour Classes
+
+In Unity scripts, variables can be public (visible in Inspector) or private:
+
+```csharp
+using UnityEngine;
+
+public class Player : MonoBehaviour
+{
+    // Public variables appear in the Inspector
+    public string playerName = "DefaultPlayer";
+    public int maxHealth = 100;
+    public float moveSpeed = 5.0f;
+    public bool isInvincible = false;
+    
+    // Private variables are hidden from the Inspector
+    private int currentHealth;
+    private float jumpForce = 10.0f;
+    
+    // [SerializeField] makes private variables appear in Inspector
+    [SerializeField] private bool canDoubleJump = true;
+    
+    void Start()
+    {
+        // Initialize variables when the game starts
+        currentHealth = maxHealth;
+        Debug.Log($"Player {playerName} initialized with {currentHealth} health!");
+    }
+}
+```
+
+## Summary
+
+These four fundamental data types will be used in virtually every Unity script you write:
+
+- **string**: For text and words (names, messages, dialogue)
+- **int**: For whole numbers (scores, counts, levels)
+- **float**: For decimal numbers (positions, speeds, timing)
+- **bool**: For true/false conditions (states, permissions, toggles)
+
+Understanding how and when to use each type will form the foundation of your C# scripting in Unity. In Part 2, we'll see how these types come together in practical game systems like health and combat mechanics.
 
 
-## Methods: Defining Actions
+
+
+___
+
+## Methods: Defining Action in the Class
 
 **Methods** are the actions (verbs) of your class. They define what your objects can _do_. Whether it’s moving, jumping, or calculating a score, methods bring your objects to life.
 
@@ -274,7 +451,7 @@ void Add() { }
 
 ---
 
-### 2. **Adding Parameters to the Method**
+### 2. **Adding Input Parameters to the Method**
 
 Methods can take inputs, called parameters, which are specified inside the parentheses.
 
@@ -305,7 +482,7 @@ void Add(int a, int b)
 
 ---
 
-### 4. **Returning a Value from the Method**
+### 4. **Adding an Output to a Method**
 
 If we want the method to return a value, we need to change the return type from `void` to the type of the value being returned (in this case, `int`).
 
@@ -324,7 +501,7 @@ int Add(int a, int b)
 
 ### 5. **Calling the Method**
 
-To use the method, we call it by its method name and pass in the required parameters.
+To use the method, we call it by its method name and pass in the required parameter inputs. The output is now stored in the `result`.
 
 ```csharp
 int result = Add(5, 10); // result now holds the value 15
@@ -345,28 +522,8 @@ int result = Add(5, 10); // result now holds the value 15
 
 ---
 
-### Final Code Example
 
-Here’s the complete code for the `Add` method:
-
-```csharp
-int Add(int a, int b)
-{
-    int sum = a + b;
-    return sum;
-}
-```
-
-**Calling the method**
-```csharp
-// This code will need to go into a method block
-int result = Add(5, 10); // result = 15
-```
-
----
-
-
-## Organizing Multiple Methods
+# Organizing Multiple Methods
 
 When writing code, it’s important to organize methods logically and behaviorally. This improves readability, maintainability, and reduces the likelihood of future issues. In this context:
 
@@ -391,6 +548,8 @@ public void Perform()
 ```
 
 - **`Perform()`**: This is a behavioral method. It describes *what* the program does by calling other methods (`Jiggle`, `Sparkle`, `Camouflage`, and `Confuse`).
+
+Another thing to say is why it's behavioral is because the order matters. If you call `Camouflage()` before `Sparkle()` you may have a total different behavior! But `Sparkle()`is `Sparkle()` and it will alway just do it's sparkling so it only one logic thing.
 
 ---
 
@@ -544,9 +703,7 @@ public void Perform()
 
 ---
 
-### Final Thoughts
-
-While the "**bad example**" works, it’s not a good practice. I strongly encourage to organize code into smaller, logical methods. This makes the code cleaner, more modular, and **easier** to work with in the long run.
+**Pro-tip:** While the **bad example** works, it’s not a good practice. I strongly encourage to organize code into smaller, logical methods. This makes the code cleaner, more modular, and **easier** to work with in the long run.
 
 ---
 
@@ -582,6 +739,8 @@ public class SomeNounName : MonoBehaviour
     void Start()
     {
         Perform();
+        // Assignment: Call the Add() method here to test and Debug.Log() the output;
+        
     }
 
     int Add(int a, int b)
@@ -635,21 +794,13 @@ public class SomeNounName : MonoBehaviour
 
 That’s it for the first lesson! By now, you’ve learned the basics of **classes**, **properties**, and **methods**—the essential building blocks of any Unity script. You’ve also seen how to organize your code for better readability and reusability.  
 
-Here’s what we covered:  
-- **Classes**: The outline or representation of your objects.  
-- **Properties**: The traits that describe your objects (like `string`, `int`, `float`, and `bool`).  
-- **Methods**: The actions your objects can perform, including Unity’s lifecycle methods and custom methods.  
-
 You now have a solid foundation to start thinking about how to structure your scripts effectively.  
 
 ---
 
 ### What’s Next?  
 
-In **Part 2**, we’ll dive into real-world examples and explore how these concepts come together in practical Unity projects. You’ll see how to:  
-- Use properties to store and manage data.  
-- Create more advanced methods with parameters and return values.  
-- Organize multiple methods to build complex behaviors.  
+In **Part 2**, we’ll dive into real-world examples and explore how these concepts come together in practical Unity projects. 
 
 Get ready to take your skills to the next level—see you in Part 2!  
 
